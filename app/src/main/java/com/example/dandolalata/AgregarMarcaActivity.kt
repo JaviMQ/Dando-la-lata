@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.dandolalata.data.database.AppDatabase
 import com.example.dandolalata.data.entities.Marca
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

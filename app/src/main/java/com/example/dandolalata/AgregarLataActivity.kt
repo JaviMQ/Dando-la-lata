@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.dandolalata.data.database.AppDatabase
 import com.example.dandolalata.data.entities.Lata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -125,7 +126,7 @@ class AgregarLataActivity : AppCompatActivity() {
                 GlobalScope.launch {
                     try {
                         // Inserta la lata en la base de datos
-                        db.LataDao().insertar(nuevaLata)
+                        db.lataDao().insertar(nuevaLata)
                         withContext(Dispatchers.Main) {
                             Toast.makeText(this@AgregarLataActivity, "Lata guardada", Toast.LENGTH_SHORT).show()
                             finish() // Cierra la actividad después de guardar
