@@ -2,21 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:fitsSystemWindows="true"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingBottom="4dp"
+    android:paddingLeft="8dp">
 
+    <!-- Imagen de la lata -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop" />
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Temp" />
 
+    <!-- Nombre de la lata -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="4dp"/>
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:text="Nombre de la lata"
+        android:textSize="16sp" />
 </LinearLayout>

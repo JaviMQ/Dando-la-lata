@@ -12,7 +12,7 @@ interface LataDao {
     fun obtenerPorId(id: Int): Lata?
 
     @Query("SELECT * FROM latas WHERE marcaId = :id")
-    fun obtenerPorMarcaId(id: Int): Lata?
+    fun obtenerPorMarcaId(id: Int): List<Lata>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertar(lata: Lata)

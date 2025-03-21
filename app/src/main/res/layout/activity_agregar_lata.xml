@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorFondoGaleria"
     tools:context=".AgregarLataActivity">
 
     <!-- ScrollView para manejar el desbordamiento en pantallas pequeñas -->
@@ -31,11 +33,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:spinnerMode="dropdown" />
-
+                <!-- Boton para crear Marca -->
                 <Button
                     android:id="@+id/buttonNuevaMarca"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:backgroundTint="@color/teal_700"
                     android:text="+" />
             </LinearLayout>
 
@@ -74,7 +77,8 @@
                 android:id="@+id/buttonGuardar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Guardar"
+                app:backgroundTint="@color/teal_700"
+                android:text="Crear lata"
                 android:textAllCaps="false" />
         </LinearLayout>
     </android.widget.ScrollView>

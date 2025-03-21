@@ -151,17 +151,28 @@ class AgregarLataActivity : AppCompatActivity() {
     // Crea un archivo para almacenar la foto capturada
     private fun crearArchivoFoto(): File {
         // Directorio para guardar las fotos
-        val directorio = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val directorio = File(filesDir, "imagenes") // Carpeta interna "imagenes"
+        if (!directorio.exists()) {
+            directorio.mkdirs() // Crea la carpeta si no existe
+        }
+
         return File.createTempFile("lata_", ".jpg", directorio)
+
     }
 
     private fun cargarMarcas() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             val marcas = db.marcaDao().obtenerTodas()
-            val nombresMarcas = marcas.map { it.nombre }
+            withContext(Dispatchers.Main) {
+                val nombresMarcas = marcas.map { it.nombre }
 
-            val adapter = ArrayAdapter(this@AgregarLataActivity, android.R.layout.simple_spinner_dropdown_item, nombresMarcas)
-            spinnerMarcas.adapter = adapter
+                val adapter = ArrayAdapter(
+                    this@AgregarLataActivity,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    nombresMarcas
+                )
+                spinnerMarcas.adapter = adapter
+            }
         }
     }
 

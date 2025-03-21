@@ -8,5 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorBarraMarcas">#D32F2F</color> <!-- Rojo -->
-    <color name="colorFondoGaleria">#C59E6C</color> <!-- Ocre -->
+    <color name="colorFondoGaleria">#EBBF91</color> <!-- Ocre -->
 </resources>
