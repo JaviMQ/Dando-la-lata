@@ -29,17 +29,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun cargarMarcas() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val marcasFromDb = db.marcaDao().obtenerTodas()
-            val listaConTodas = listOf(Marca(id = 0, nombre = "Todas las marcas")) + marcasFromDb
-            _marcas.postValue(listaConTodas)
+        viewModelScope.launch {
+            db.marcaDao().obtenerTodasFlow().collect { marcasFromDb ->
+                val listaConTodas = listOf(Marca(id = 0, nombre = "Todas las marcas")) + marcasFromDb
+                _marcas.postValue(listaConTodas)
+            }
         }
     }
 
     private fun cargarLatas() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val latasFromDb = db.lataDao().obtenerTodas()
-            _latas.postValue(latasFromDb)
+        viewModelScope.launch {
+            db.lataDao().obtenerTodasFlow().collect { latasFromDb ->
+                _latas.postValue(latasFromDb)
+            }
         }
     }
 

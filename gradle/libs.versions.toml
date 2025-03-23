@@ -15,6 +15,7 @@ androidx-recyclerview = "1.4.0"
 squareup-picasso = "2.8"
 material = "1.10.0"
 constraintlayout = "2.1.4"
+lifecycleViewmodelAndroid = "2.8.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,7 @@ androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version
 squareup-picasso = { module = "com.squareup.picasso:picasso", version.ref = "squareup-picasso" }
 google-material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -2,6 +2,7 @@ package com.example.dandolalata.data.database
 
 import androidx.room.*
 import com.example.dandolalata.data.entities.Marca
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MarcaDao {
@@ -13,4 +14,7 @@ interface MarcaDao {
 
     @Delete
     fun eliminar(marca: Marca)
+
+    @Query("SELECT * FROM marcas")
+    fun obtenerTodasFlow(): Flow<List<Marca>>
 }

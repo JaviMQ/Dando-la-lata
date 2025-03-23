@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -17,6 +18,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.dandolalata.data.database.AppDatabase
 import com.example.dandolalata.data.entities.Lata
+import com.example.dandolalata.data.entities.Marca
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -63,18 +65,7 @@ class AgregarLataActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val nuevaMarca = result.data?.getStringExtra("NUEVA_MARCA")
                 nuevaMarca?.let {
-
-                    cargarMarcas() // Recargar el Spinner
-
-                    // Crear el ArrayAdapter con la lista actualizada de marcas
-                    val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listaMarcas)
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spinnerMarcas.adapter = adapter
-
-                    // Establecer la selección en el Spinner
-                    val position = adapter.getPosition(it)
-                    spinnerMarcas.setSelection(position)
-
+                    cargarMarcas(it) // Recargar el Spinner
                 }
             }
         }
@@ -112,8 +103,9 @@ class AgregarLataActivity : AppCompatActivity() {
         buttonGuardar.setOnClickListener {
             val nombre = editTextNombre.text.toString()
             val descripcion = editTextDescripcion.text.toString()
+            val posicionSeleccionada = spinnerMarcas.selectedItemPosition
 
-            if (nombre.isNotEmpty() && descripcion.isNotEmpty() && rutaFoto != null) {
+            if (nombre.isNotEmpty() && descripcion.isNotEmpty() && rutaFoto != null && posicionSeleccionada > 0) {
                 // Crea la nueva lata
                 val nuevaLata = Lata(
                     marcaId = idMarcaSeleccionada,
@@ -160,28 +152,27 @@ class AgregarLataActivity : AppCompatActivity() {
 
     }
 
-    private fun cargarMarcas() {
+    private fun cargarMarcas(nombreMarca: String? = null) {
         lifecycleScope.launch(Dispatchers.IO) {
             val marcas = db.marcaDao().obtenerTodas()
             withContext(Dispatchers.Main) {
-                val nombresMarcas = marcas.map { it.nombre }
+                listaMarcas.clear()
+                listaMarcas.add("Elige una marca") // Opción inicial
+                listaMarcas.addAll(marcas.map { it.nombre })
 
                 val adapter = ArrayAdapter(
                     this@AgregarLataActivity,
                     android.R.layout.simple_spinner_dropdown_item,
-                    nombresMarcas
+                    listaMarcas
                 )
                 spinnerMarcas.adapter = adapter
-            }
-        }
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_NUEVA_MARCA && resultCode == RESULT_OK) {
-            cargarMarcas() // Recargar las marcas en el Spinner
-            val nuevaMarca = data?.getStringExtra("NUEVA_MARCA")
-            spinnerMarcas.setSelection((spinnerMarcas.adapter as ArrayAdapter<String>).getPosition(nuevaMarca))
+                nombreMarca?.let {
+                    val position = adapter.getPosition(it)
+                    spinnerMarcas.setSelection(position)
+                }
+
+            }
         }
     }
 

@@ -81,8 +81,6 @@ class MainActivity : ComponentActivity() {
                 marcas.map { it.nombre }
             )
             spinnerMarcas.adapter = adapter
-            // spinnerMarcas.dropDownVerticalOffset = spinnerMarcas.height + 30
-
             adapter.notifyDataSetChanged()
 
             spinnerMarcas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -99,11 +97,7 @@ class MainActivity : ComponentActivity() {
             latasAdapter.actualizarLista(latas)
         }
 
-       // Cargar marcas y latas desde la base de datos
-        /*
-       loadLatas()
-       loadMarcas()
-        */
+
        val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
        fab.setOnClickListener {
            val intent = Intent(this, AgregarLataActivity::class.java)
@@ -123,53 +117,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-/*
-    private fun loadMarcas() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val db = AppDatabase.obtenerInstancia(applicationContext)
-            val marcasFromDb = db.marcaDao().obtenerTodas()
 
-            // Agregar la opción "Todas" al inicio
-            val listaConTodas = listOf(Marca(id = 0, nombre = "Todas las marcas 1")) + marcasFromDb
-
-            withContext(Dispatchers.Main) {
-                marcas = listaConTodas
-
-                // Configurar el Spinner con las marcas
-                val adapter = ArrayAdapter(
-                    this@MainActivity,
-                    android.R.layout.simple_spinner_dropdown_item,
-                    marcas.map { it.nombre }
-                )
-                spinnerMarcas.adapter = adapter
-
-                // Manejar selección en el Spinner
-                spinnerMarcas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        filtrarLatas(marcas[position])
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {
-                        filtrarLatas(null)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun loadLatas() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val db = AppDatabase.obtenerInstancia(applicationContext)
-            val latasFromDb = db.lataDao().obtenerTodas()
-
-            withContext(Dispatchers.Main) {
-                todasLasLatas = latasFromDb
-                latasAdapter = LatasAdapter(todasLasLatas)
-                    recyclerViewLatas.adapter = latasAdapter
-            }
-        }
-    }
-*/
     private fun filtrarLatas(marca: Marca?) {
         val latasFiltradas = if (marca == null || marca.id == 0) {
             todasLasLatas // Mostrar todas
@@ -180,5 +128,3 @@ class MainActivity : ComponentActivity() {
         latasAdapter.actualizarLista(latasFiltradas)
     }
 }
-
-
