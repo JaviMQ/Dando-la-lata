@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
+/*
     private fun filtrarLatas(marca: Marca?) {
         val latasFiltradas = if (marca == null || marca.id == 0) {
             todasLasLatas // Mostrar todas
@@ -127,4 +127,6 @@ class MainActivity : ComponentActivity() {
 
         latasAdapter.actualizarLista(latasFiltradas)
     }
+
+ */
 }

@@ -83,7 +83,6 @@ class AgregarLataActivity : AppCompatActivity() {
 
         // Configurar el Spinner
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listaMarcas)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerMarcas.adapter = adapter
 
         // Botón para tomar una foto
@@ -115,7 +114,8 @@ class AgregarLataActivity : AppCompatActivity() {
                 )
 
                 // Guarda la lata en la base de datos usando coroutines
-                GlobalScope.launch {
+                // TODO: GlobalScope
+                lifecycleScope.launch {
                     try {
                         // Inserta la lata en la base de datos
                         db.lataDao().insertar(nuevaLata)

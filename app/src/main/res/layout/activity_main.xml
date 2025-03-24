@@ -8,9 +8,7 @@
     android:background="@color/colorFondoGaleria"
     tools:context=".MainActivity">
 
-
     <!-- Spinner para seleccionar la marca
-    android:popupBackground="@color/colorBarraMarcas"
     -->
     <Spinner
         android:id="@+id/spinnerMarcas"
@@ -20,10 +18,8 @@
         android:elevation="10dp"
         android:padding="8dp"
         android:spinnerMode="dropdown"
-
+        android:popupBackground="@color/colorBarraMarcas"
         />
-
-
 
     <!-- Lista de latas filtrada por marca -->
     <androidx.recyclerview.widget.RecyclerView
