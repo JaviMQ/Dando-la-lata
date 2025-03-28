@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Dando la lata</string>
+    <string name="crear_copia">Crear copia seguridad</string>
+    <string name="importar_copia">Importar copia seguridad</string>
+    <string name="abrir_menu">Abrir menu</string>
+    <string name="cerrar_menu">Cerrar menu</string>
 </resources>

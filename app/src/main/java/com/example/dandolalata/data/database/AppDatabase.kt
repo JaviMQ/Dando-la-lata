@@ -21,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun obtenerInstancia(context: Context): AppDatabase {
             return instancia ?: synchronized(this) {
-                Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "db_latas")
+                Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DatabaseConfig.DATABASE_NAME)
                     .addCallback(object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
