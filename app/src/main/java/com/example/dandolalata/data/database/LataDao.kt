@@ -19,7 +19,7 @@ interface LataDao {
     fun obtenerPorMarcaId(id: Int): List<Lata>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertar(lata: Lata)
+    suspend fun insertar(lata: Lata)
 
     @Delete
     fun eliminar(lata: Lata)

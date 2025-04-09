@@ -125,7 +125,8 @@ class AgregarLataActivity : AppCompatActivity() {
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@AgregarLataActivity, "Error al guardar la lata", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AgregarLataActivity, "Error al guardar la lata - ${e.message}", Toast.LENGTH_SHORT).show()
+                            Log.d("javi", "Error al guardar la lata - ${e.message}")
                         }
                     }
                 }
