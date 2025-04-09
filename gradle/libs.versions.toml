@@ -21,6 +21,8 @@ playServicesDrive = "17.0.0"
 playServicesAuth = "21.3.0"
 googleid = "1.1.1"
 credentialsPlayServicesAuth = "1.5.0"
+googleApiClientGoogleapisAuthOauth = "1.2.3-alpha"
+firebaseCrashlyticsBuildtools = "3.0.3"
 
 
 
@@ -53,6 +55,8 @@ play-services-drive = { group = "com.google.android.gms", name = "play-services-
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
+google-api-client-googleapis-auth-oauth = { group = "com.google.api.client", name = "google-api-client-googleapis-auth-oauth", version.ref = "googleApiClientGoogleapisAuthOauth" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 
 

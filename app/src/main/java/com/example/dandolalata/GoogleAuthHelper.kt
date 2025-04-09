@@ -7,20 +7,26 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
-import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.util.UUID
-//import com.google.android.gms.drive.DriveScopes
+import android.util.Base64
+import com.google.android.gms.auth.api.identity.AuthorizationClient
+import com.google.android.gms.auth.api.identity.AuthorizationRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.common.api.Scope
+import com.google.android.gms.tasks.Task
+
 
 
 object DriveScopes {
-    const val DRIVE = "https://www.googleapis.com/auth/drive"
+    //const val DRIVE = "https://www.googleapis.com/auth/drive"
     const val DRIVE_FILE = "https://www.googleapis.com/auth/drive.file"
-    const val DRIVE_APPDATA = "https://www.googleapis.com/auth/drive.appdata"
-    const val DRIVE_READONLY = "https://www.googleapis.com/auth/drive.readonly"
+    //const val DRIVE_APPDATA = "https://www.googleapis.com/auth/drive.appdata"
+    //const val DRIVE_READONLY = "https://www.googleapis.com/auth/drive.readonly"
 }
 
 
@@ -31,10 +37,10 @@ class GoogleAuthHelper(private val context: Context) {
     suspend fun signIn(activity: Activity): Pair<String, String>? = withContext(Dispatchers.IO) {
         try {
             val googleIdOption = GetGoogleIdOption.Builder()
-                // .setServerClientId(context.getString(R.string.web_client_id))
-                .setServerClientId("404713282672-phdvlpf9emfgs2efhu1gdpfdqtto79lq.apps.googleusercontent.com")
+                .setServerClientId(context.getString(R.string.web_client_id))
                 .setFilterByAuthorizedAccounts(false)
-                .associateLinkedAccounts("drive", listOf(DriveScopes.DRIVE_FILE))
+                .setAutoSelectEnabled(true)
+                // .associateLinkedAccounts("drive", listOf(DriveScopes.DRIVE_FILE))
                 .setNonce(UUID.randomUUID().toString()) // Añade seguridad
                 .build()
 
@@ -65,6 +71,37 @@ class GoogleAuthHelper(private val context: Context) {
                 val googleIdTokenCredential = GoogleIdTokenCredential
                     .createFrom(credential.data)
 
+                // No se puede verificar 100%. Verificacion manual.
+                // TODO: Ver qué hay en googleIdTokenCredential y en googleIdTokenCredential.idToken
+
+                val payloadJson = decodeIdTokenPayload(googleIdTokenCredential.idToken)
+                val email = payloadJson.getString("email")
+                val userId = payloadJson.getString("sub")
+
+                /*
+                val jwtParts = googleIdTokenCredential.idToken.split(".")
+                val payloadJson = String(android.util.Base64.decode(jwtParts[1], android.util.Base64.URL_SAFE))
+                Log.d("Payload", payloadJson)
+                */
+                val driveScope = Scope(DriveScopes.DRIVE_FILE)
+                val authorizationRequest = AuthorizationRequest.Builder()
+                    .setRequestedScopes(listOf(driveScope))
+                    .build()
+
+                val authorizationClient = Identity.getAuthorizationClient(context)
+                authorizationClient.authorize(authorizationRequest)
+                    .addOnSuccessListener { authorizationResult ->
+                        // Maneja el resultado exitoso aquí
+                        Log.e("JAVI", "Autorizacion OK")
+
+                    }
+                    .addOnFailureListener { exception ->
+                        // Maneja el error aquí
+                        Log.e("JAVI", "Error: ${exception.message}")
+                    }
+
+
+
                 Pair(googleIdTokenCredential.id, googleIdTokenCredential.idToken)
             }
             throw Exception();
@@ -75,7 +112,13 @@ class GoogleAuthHelper(private val context: Context) {
         }
     }
 
-
+    fun decodeIdTokenPayload(idToken: String): JSONObject {
+        val parts = idToken.split(".")
+        val payload = parts[1]
+        val decodedBytes = Base64.decode(payload, Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+        val decodedPayload = String(decodedBytes, Charsets.UTF_8)
+        return JSONObject(decodedPayload)
+    }
 
     suspend fun signOut() {
         // No hay necesidad de PlayServicesAuthProvider
