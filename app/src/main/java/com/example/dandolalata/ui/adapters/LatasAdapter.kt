@@ -21,9 +21,6 @@ class LatasAdapter(private var latasList: List<Lata>) :
         val imagen: ImageView = view.findViewById(R.id.imageView)
         val nombre: TextView = view.findViewById(R.id.textView)
 
-
-
-
         fun bind(lata: Lata) {
             nombre.text = lata.nombre
             Picasso.get().load(Uri.parse(lata.foto)).into(imagen)
