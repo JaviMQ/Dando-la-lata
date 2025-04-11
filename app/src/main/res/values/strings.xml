@@ -4,5 +4,6 @@
     <string name="importar_copia">Importar copia seguridad</string>
     <string name="abrir_menu">Abrir menu</string>
     <string name="cerrar_menu">Cerrar menu</string>
-    <string name="web_client_id">404713282672-phdvlpf9emfgs2efhu1gdpfdqtto79lq.apps.googleusercontent.com</string>
+    <string name="drive_scope_file">https://www.googleapis.com/auth/drive.file</string>
+    <string name="drive_upload_url">https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart</string>
 </resources>

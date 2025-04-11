@@ -17,6 +17,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+        buildConfigField("String", "WEB_GOOGLE_CLIENT_ID", "\"404713282672-phdvlpf9emfgs2efhu1gdpfdqtto79lq.apps.googleusercontent.com\"")
     }
 
     buildTypes {
@@ -37,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -53,13 +57,12 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.android)
-    implementation(libs.androidx.credentials)
     implementation(libs.play.services.drive)
-    implementation(libs.googleid)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.play.services.auth)
     implementation(libs.google.api.client.googleapis.auth.oauth)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.googleid)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

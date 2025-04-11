@@ -34,16 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var spinnerMarcas: Spinner
     private lateinit var recyclerViewLatas: RecyclerView
     private lateinit var latasAdapter: LatasAdapter
-
     private lateinit var drawerLayout: DrawerLayout
-
     private val viewModel: MainViewModel by viewModels()
-
-    // private var todasLasLatas: List<Lata> = listOf()
-    // private var marcas: List<Marca> = listOf()
-
     private lateinit var toggle: ActionBarDrawerToggle
-
     private lateinit var authHelper: GoogleAuthHelper
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -73,32 +66,9 @@ class MainActivity : AppCompatActivity() {
 
         configurarListenerMenuLateral()
 
+        configurarObservadorLatas()
+        configurarObservadorMarcas()
 
-
-        // Observar las marcas
-        viewModel.marcas.observe(this) { marcas ->
-
-            val adapter = ArrayAdapter(
-                this@MainActivity,
-                android.R.layout.simple_spinner_item,
-                marcas.map { it.nombre }
-            )
-            spinnerMarcas.adapter = adapter
-            adapter.notifyDataSetChanged()
-
-            spinnerMarcas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    viewModel.filtrarLatas(marcas[position])
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {}
-            }
-        }
-
-        // Observar las latas y actualizar el RecyclerView
-        viewModel.latas.observe(this) { latas ->
-            latasAdapter.actualizarLista(latas)
-        }
 
 
        val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
@@ -184,6 +154,35 @@ class MainActivity : AppCompatActivity() {
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
+        }
+    }
+
+    private fun configurarObservadorLatas()
+    {
+        // Observar las latas y actualizar el RecyclerView
+        viewModel.latas.observe(this) { latas ->
+            latasAdapter.actualizarLista(latas)
+        }
+    }
+    private fun configurarObservadorMarcas()
+    {
+        viewModel.marcas.observe(this) { marcas ->
+
+            val adapter = ArrayAdapter(
+                this@MainActivity,
+                android.R.layout.simple_spinner_item,
+                marcas.map { it.nombre }
+            )
+            spinnerMarcas.adapter = adapter
+            adapter.notifyDataSetChanged()
+
+            spinnerMarcas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    viewModel.filtrarLatas(marcas[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
         }
     }
 

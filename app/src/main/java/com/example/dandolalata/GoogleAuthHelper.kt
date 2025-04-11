@@ -26,25 +26,17 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-object DriveScopes {
-    //const val DRIVE = "https://www.googleapis.com/auth/drive"
-    const val DRIVE_FILE = "https://www.googleapis.com/auth/drive.file"
-    //const val DRIVE_APPDATA = "https://www.googleapis.com/auth/drive.appdata"
-    //const val DRIVE_READONLY = "https://www.googleapis.com/auth/drive.readonly"
-}
-
-
 class GoogleAuthHelper(private val context: Context) {
 
     private val credentialManager = CredentialManager.create(context)
 
-    suspend fun signIn(activity: Activity): Pair<String, String>? = withContext(Dispatchers.IO) {
+    suspend fun signIn(activity: Activity): Pair<String, String>? = withContext(Dispatchers.Main) {
         try {
+
             val googleIdOption = GetGoogleIdOption.Builder()
-                .setServerClientId(context.getString(R.string.web_client_id))
+                .setServerClientId(BuildConfig.WEB_GOOGLE_CLIENT_ID) // Debe ser el web, no el android!
                 .setFilterByAuthorizedAccounts(false)
-                .setAutoSelectEnabled(true)
-                // .associateLinkedAccounts("drive", listOf(DriveScopes.DRIVE_FILE))
+                // .setAutoSelectEnabled(true)
                 .setNonce(UUID.randomUUID().toString()) // Añade seguridad
                 .build()
 
@@ -85,7 +77,10 @@ class GoogleAuthHelper(private val context: Context) {
 
 
 
-                val driveScope = Scope(DriveScopes.DRIVE_FILE)
+//                val driveScope = Scope( context.getString(R.string.drive_scope_file))
+                val driveScope = Scope("https://www.googleapis.com/auth/drive.file")
+
+
                 val authorizationRequest = AuthorizationRequest.Builder()
                     .setRequestedScopes(listOf(driveScope))
                     .build()
@@ -95,9 +90,12 @@ class GoogleAuthHelper(private val context: Context) {
                     .addOnSuccessListener { authorizationResult ->
                         // Maneja el resultado exitoso aquí
                         Log.e("JAVI", "TENGO AUTORIZACION OK")
+                        Log.e("JAVI 2", authorizationResult.grantedScopes.toString())
+
                         val token = authorizationResult.accessToken
                         if (token != null) {
-                            subirArchivoADrive(token)
+                            val driveHelper = GoogleDriveHelper(context)
+                            driveHelper.subirArchivoADrive(token)
                         }
 
                     }
@@ -110,10 +108,11 @@ class GoogleAuthHelper(private val context: Context) {
 
                 return Pair(googleIdTokenCredential.id, googleIdTokenCredential.idToken)
             }
-            throw Exception();
+            throw Exception("Credential type is not valid")
 
 
         } catch (e: Exception) {
+            Log.e("AUTH_ERROR", "Error al procesar la respuesta: ${e.message}")
             null
         }
     }
@@ -130,53 +129,5 @@ class GoogleAuthHelper(private val context: Context) {
         // No hay necesidad de PlayServicesAuthProvider
         // La limpieza de credenciales se maneja automáticamente
     }
-
-    fun subirArchivoADrive(accessToken: String) {
-        val dbFile = File(context.getDatabasePath("nombre_de_tu_db.db").path)
-        val mimeType = "application/octet-stream"
-
-        val url = URL("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart")
-        val boundary = "-------${System.currentTimeMillis()}"
-
-        val metadata = """
-        {
-          "name": "${dbFile.name}"
-        }
-    """.trimIndent()
-
-        val bodyStream = ByteArrayOutputStream().apply {
-            val writer = OutputStreamWriter(this)
-            writer.write("--$boundary\r\n")
-            writer.write("Content-Type: application/json; charset=UTF-8\r\n\r\n")
-            writer.write(metadata)
-            writer.write("\r\n--$boundary\r\n")
-            writer.write("Content-Type: $mimeType\r\n\r\n")
-            writer.flush()
-            write(dbFile.readBytes())
-            writer.write("\r\n--$boundary--\r\n")
-            writer.flush()
-        }
-
-        Thread {
-            try {
-                with(url.openConnection() as HttpURLConnection) {
-                    requestMethod = "POST"
-                    doOutput = true
-                    setRequestProperty("Authorization", "Bearer $accessToken")
-                    setRequestProperty("Content-Type", "multipart/related; boundary=$boundary")
-
-                    outputStream.write(bodyStream.toByteArray())
-                    outputStream.flush()
-
-                    val response = inputStream.bufferedReader().readText()
-                    Log.d("DRIVE", "Subida exitosa: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("DRIVE", "Error al subir archivo: ${e.message}")
-            }
-        }.start()
-    }
-
-
 
 }
