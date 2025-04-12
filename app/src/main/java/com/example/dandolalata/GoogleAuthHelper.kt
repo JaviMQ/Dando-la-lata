@@ -50,7 +50,7 @@ class GoogleAuthHelper(private val context: Context) {
                 context = activity
             )
 
-            processResponse(response)
+            processResponse(response, activity)
 
         } catch (e: GetCredentialException) {
             Log.e("AUTH_ERROR", "Error: ${e.type} - ${e.message}")
@@ -58,7 +58,7 @@ class GoogleAuthHelper(private val context: Context) {
         }
     }
 
-    private fun processResponse(response: GetCredentialResponse): Pair<String, String>? {
+    private fun processResponse(response: GetCredentialResponse, activity: Activity): Pair<String, String>? {
         return try {
             // Extraer credencial de Google ID
             val credential = response.credential
@@ -85,7 +85,7 @@ class GoogleAuthHelper(private val context: Context) {
                     .setRequestedScopes(listOf(driveScope))
                     .build()
 
-                val authorizationClient = Identity.getAuthorizationClient(context)
+                val authorizationClient = Identity.getAuthorizationClient(activity)
                 authorizationClient.authorize(authorizationRequest)
                     .addOnSuccessListener { authorizationResult ->
                         // Maneja el resultado exitoso aquí
