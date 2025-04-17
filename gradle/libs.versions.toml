@@ -1,30 +1,27 @@
 [versions]
-agp = "8.8.0"
+agp = "8.8.2"
 kotlin = "2.0.0"
-coreKtx = "1.10.1"
+coreKtx = "1.16.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.6.1"
-activityCompose = "1.8.0"
-composeBom = "2024.04.01"
-room = "2.6.0"
-roomCommon = "2.6.0"
-roomKtx = "2.6.0"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.1"
+composeBom = "2025.04.00"
+room = "2.7.0"
+roomCommon = "2.7.0"
+roomKtx = "2.7.0"
 androidx-recyclerview = "1.4.0"
 squareup-picasso = "2.8"
-material = "1.10.0"
-constraintlayout = "2.1.4"
+material = "1.12.0"
+constraintlayout = "2.2.1"
 lifecycleViewmodelAndroid = "2.8.7"
-credentials = "1.5.0"
 playServicesDrive = "17.0.0"
 playServicesAuth = "21.3.0"
 googleid = "1.1.1"
 credentialsPlayServicesAuth = "1.5.0"
 googleApiClientGoogleapisAuthOauth = "1.2.3-alpha"
 firebaseCrashlyticsBuildtools = "3.0.3"
-
-
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,16 +47,12 @@ squareup-picasso = { module = "com.squareup.picasso:picasso", version.ref = "squ
 google-material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
-androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 play-services-drive = { group = "com.google.android.gms", name = "play-services-drive", version.ref = "playServicesDrive" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 google-api-client-googleapis-auth-oauth = { group = "com.google.api.client", name = "google-api-client-googleapis-auth-oauth", version.ref = "googleApiClientGoogleapisAuthOauth" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
-
-
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
