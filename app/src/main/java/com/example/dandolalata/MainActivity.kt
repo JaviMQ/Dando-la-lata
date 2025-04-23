@@ -1,20 +1,20 @@
 package com.example.dandolalata
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -29,6 +29,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 
+
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var spinnerMarcas: Spinner
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var authHelper: GoogleAuthHelper
+
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -131,16 +134,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_crear_backup -> {
                     lifecycleScope.launch {
 
-                        val result = authHelper.signIn(this@MainActivity)
-                        result?.let { (email, token) ->
+                        val token  = authHelper.signIn()
+                        if (token != null) {
                             // ¡Autenticación exitosa!
                             Toast.makeText(this@MainActivity, "Auth OK", Toast.LENGTH_SHORT).show()
 
-                            val dbPath = this@MainActivity.getDatabasePath(DatabaseConfig.DATABASE_NAME).absolutePath
+                            val driveHelper = GoogleDriveHelper(this@MainActivity)
+                            driveHelper.subirArchivoADrive(token)
 
 
                             // startExportToDrive(email, token)
-                        } ?: run {
+                        }else{
                             Toast.makeText(this@MainActivity, "Error en autenticación", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -187,13 +191,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-/*
-private fun getMimeType(file: File): String {
-    return when (file.extension.toLowerCase()) {
-        "jpg", "jpeg" -> "image/jpeg"
-        "png" -> "image/png"
-        "gif" -> "image/gif"
-        else -> "application/octet-stream"
-    }
-}
- */

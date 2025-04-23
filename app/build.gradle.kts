@@ -18,6 +18,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+
         buildConfigField("String", "WEB_GOOGLE_CLIENT_ID", "\"404713282672-phdvlpf9emfgs2efhu1gdpfdqtto79lq.apps.googleusercontent.com\"")
     }
 
@@ -57,13 +58,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.android)
     implementation(libs.play.services.drive)
-    implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.play.services.auth)
     implementation(libs.google.api.client.googleapis.auth.oauth)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.googleid)
-    implementation(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,16 +69,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.room.runtime) // Dependencia principal de Room
+    implementation(libs.androidx.room.ktx)     // Soporte para corrutinas
+    kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.recyclerview)
     implementation(libs.squareup.picasso)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)
 }
-
-configurations.all {
-    resolutionStrategy {
-        force("org.jetbrains:annotations:23.0.0")
-        exclude(group = "com.intellij", module = "annotations")
-    }
-}
-
