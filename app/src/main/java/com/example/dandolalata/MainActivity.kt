@@ -139,11 +139,9 @@ class MainActivity : AppCompatActivity() {
                             // ¡Autenticación exitosa!
                             Toast.makeText(this@MainActivity, "Auth OK", Toast.LENGTH_SHORT).show()
 
-                            val driveHelper = GoogleDriveHelper(this@MainActivity)
-                            driveHelper.subirArchivoADrive(token)
+                            val driveHelper = GoogleDriveHelper(this@MainActivity, token)
+                            driveHelper.exportarADrive()
 
-
-                            // startExportToDrive(email, token)
                         }else{
                             Toast.makeText(this@MainActivity, "Error en autenticación", Toast.LENGTH_SHORT).show()
                         }
@@ -154,6 +152,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_importar -> {
                     // Acción para la opción 2
                     Toast.makeText(this@MainActivity, "Seleccionaste Opción 2", Toast.LENGTH_SHORT).show()
+                    lifecycleScope.launch {
+                        val token = authHelper.signIn()
+                        if (token != null) {
+                            val driveHelper = GoogleDriveHelper(this@MainActivity, token)
+                            driveHelper.importarDesdeDrive()
+
+                        }else{
+                            Toast.makeText(this@MainActivity, "Error en autenticación", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)

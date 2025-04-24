@@ -1,7 +1,9 @@
 package com.example.dandolalata
 
 import android.app.Activity
+import android.util.Base64
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -19,6 +21,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.util.UUID
 
 
@@ -44,6 +47,7 @@ class GoogleAuthHelper(private val activity: ComponentActivity) {
             val googleIdOption = GetGoogleIdOption.Builder()
                 .setServerClientId(BuildConfig.WEB_GOOGLE_CLIENT_ID)
                 .setFilterByAuthorizedAccounts(false)
+                .setAutoSelectEnabled(true)
                 .setNonce(UUID.randomUUID().toString())
                 .build()
 
@@ -77,9 +81,14 @@ class GoogleAuthHelper(private val activity: ComponentActivity) {
             return null
         }
 
-        // val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+        val tokenJson = tokenAJson(googleIdTokenCredential.idToken)
+        if(tokenJson.getString("email") != "javier.mquetglas@gmail.com"){
+            Toast.makeText(activity.applicationContext, "Email no permitido", Toast.LENGTH_SHORT).show()
+            return null
+        }
+        val driveScope = Scope(activity.applicationContext.getString(R.string.drive_scope_file))
 
-        val driveScope = Scope("https://www.googleapis.com/auth/drive.file")
         val authRequest = AuthorizationRequest.Builder()
             .setRequestedScopes(listOf(driveScope))
             .build()
@@ -95,7 +104,7 @@ class GoogleAuthHelper(private val activity: ComponentActivity) {
     ): String? = withContext(Dispatchers.Main) {
         driveTokenDeferred = CompletableDeferred()
 
-        authClient.authorize(authRequest)
+        authClient.authorize(authRequest) // Aqui Google ya sabe el usuario autenticado previamente
             .addOnSuccessListener { authResult ->
                 lastAuthorizationResult = authResult
                 if (authResult.hasResolution()) {
@@ -107,7 +116,7 @@ class GoogleAuthHelper(private val activity: ComponentActivity) {
                         driveTokenDeferred?.complete(null)
                     }
                 } else {
-                    // Acceso directo sin pedir confirmación
+                    // Acceso directo sin pedir confirmación, ya se habia dado permiso
                     driveTokenDeferred?.complete(authResult.accessToken)
                 }
             }
@@ -117,5 +126,13 @@ class GoogleAuthHelper(private val activity: ComponentActivity) {
             }
 
         driveTokenDeferred?.await()
+    }
+
+    private fun tokenAJson(idToken: String): JSONObject {
+        val parts = idToken.split(".")
+        val payload = parts[1]
+        val decodedBytes = Base64.decode(payload, Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+        val decodedPayload = String(decodedBytes, Charsets.UTF_8)
+        return JSONObject(decodedPayload)
     }
 }

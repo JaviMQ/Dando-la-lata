@@ -4,7 +4,6 @@ package com.example.dandolalata
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -18,9 +17,8 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.dandolalata.data.database.AppDatabase
 import com.example.dandolalata.data.entities.Lata
-import com.example.dandolalata.data.entities.Marca
+import com.example.dandolalata.utils.AppPaths
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -144,7 +142,7 @@ class AgregarLataActivity : AppCompatActivity() {
     // Crea un archivo para almacenar la foto capturada
     private fun crearArchivoFoto(): File {
         // Directorio para guardar las fotos
-        val directorio = File(filesDir, "imagenes") // Carpeta interna "imagenes"
+        val directorio = File(filesDir,  AppPaths.IMAGENES_DIR) // Carpeta interna "imagenes"
         if (!directorio.exists()) {
             directorio.mkdirs() // Crea la carpeta si no existe
         }
