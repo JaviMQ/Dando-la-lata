@@ -1,6 +1,7 @@
 package com.example.dandolalata
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -22,13 +23,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dandolalata.data.database.DatabaseConfig
 import com.example.dandolalata.ui.adapters.LatasAdapter
 import com.example.dandolalata.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
@@ -60,7 +61,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         checkPermission()
         inicializarVariables()
@@ -133,30 +133,30 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.action_crear_backup -> {
                     lifecycleScope.launch {
-
                         val token  = authHelper.signIn()
                         if (token != null) {
                             // ¡Autenticación exitosa!
                             Toast.makeText(this@MainActivity, "Auth OK", Toast.LENGTH_SHORT).show()
 
                             val driveHelper = GoogleDriveHelper(this@MainActivity, token)
-                            driveHelper.exportarADrive()
+                            if(driveHelper.exportarADrive())
+                                Toast.makeText(this@MainActivity, "Copia de seguridad OK", Toast.LENGTH_SHORT).show()
 
                         }else{
                             Toast.makeText(this@MainActivity, "Error en autenticación", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    // Acción para la opción 1
 
                 }
                 R.id.action_importar -> {
-                    // Acción para la opción 2
-                    Toast.makeText(this@MainActivity, "Seleccionaste Opción 2", Toast.LENGTH_SHORT).show()
                     lifecycleScope.launch {
                         val token = authHelper.signIn()
                         if (token != null) {
                             val driveHelper = GoogleDriveHelper(this@MainActivity, token)
-                            driveHelper.importarDesdeDrive()
+                            if( driveHelper.importarDesdeDrive()){
+                                Toast.makeText(this@MainActivity, "Importación OK", Toast.LENGTH_SHORT).show()
+                                reiniciarApp(this@MainActivity)
+                            }
 
                         }else{
                             Toast.makeText(this@MainActivity, "Error en autenticación", Toast.LENGTH_SHORT).show()
@@ -197,6 +197,13 @@ class MainActivity : AppCompatActivity() {
                 override fun onNothingSelected(parent: AdapterView<*>) {}
             }
         }
+    }
+
+    fun reiniciarApp(context: Context) {
+        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+        Runtime.getRuntime().exit(0) // Finaliza el proceso actual
     }
 
 }
