@@ -36,7 +36,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".AgregarLataActivity" />
-        <activity android:name=".AgregarMarcaActivity" />
+        <activity android:name=".AgregarMarcaActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

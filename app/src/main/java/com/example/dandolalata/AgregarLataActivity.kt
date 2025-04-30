@@ -50,7 +50,6 @@ class AgregarLataActivity : AppCompatActivity() {
                     imageView.setImageURI(Uri.parse(it)) // Mostrar la imagen en el ImageView
 
                     // En este punto, la foto ya se ha tomado y está almacenada en el archivo
-                    // Puedes guardar la ruta (uri.toString()) en la base de datos si es necesario
                 }
             } else {
                 // Si hubo un error al tomar la foto
@@ -153,7 +152,7 @@ class AgregarLataActivity : AppCompatActivity() {
 
     private fun cargarMarcas(nombreMarca: String? = null) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val marcas = db.marcaDao().obtenerTodas()
+            val marcas = db.marcaDao().obtenerTodasPorNombre()
             withContext(Dispatchers.Main) {
                 listaMarcas.clear()
                 listaMarcas.add("Elige una marca") // Opción inicial

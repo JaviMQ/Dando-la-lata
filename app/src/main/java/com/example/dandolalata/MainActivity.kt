@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.WindowCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -34,7 +35,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var spinnerMarcas: Spinner
+    private lateinit var spinnerMarcas: Spinner         // Desplegable Marcas
     private lateinit var recyclerViewLatas: RecyclerView
     private lateinit var latasAdapter: LatasAdapter
     private lateinit var drawerLayout: DrawerLayout
@@ -42,14 +43,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var authHelper: GoogleAuthHelper
 
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permiso concedido: puedes acceder a las imágenes
-            // loadImages()
-        } else {
+        if (!isGranted) {
             // Permiso denegado
             Toast.makeText(this, "Permiso denegado", Toast.LENGTH_SHORT).show()
             checkPermission()
@@ -68,18 +65,18 @@ class MainActivity : AppCompatActivity() {
 
 
         configurarListenerMenuLateral()
+        configurarListenerCrearLata()
 
         configurarObservadorLatas()
         configurarObservadorMarcas()
+    }
 
-
-
-       val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
-       fab.setOnClickListener {
-           val intent = Intent(this, AgregarLataActivity::class.java)
-           startActivity(intent)
-       }
-
+    private fun configurarListenerCrearLata(){
+        val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
+        fab.setOnClickListener {
+            val intent = Intent(this, AgregarLataActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 
@@ -199,7 +196,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun reiniciarApp(context: Context) {
+    private fun reiniciarApp(context: Context) {
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)

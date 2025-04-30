@@ -32,13 +32,14 @@
                 android:weightSum="1">
 
                 <!-- Spinner para seleccionar la marca -->
+                <!-- android:background="@color/colorBarraMarcas"
+                android:popupBackground="@color/colorBarraMarcas"-->
                 <Spinner
                     android:id="@+id/spinnerMarcas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorBarraMarcas"
                     android:elevation="10dp"
-                    android:popupBackground="@color/colorBarraMarcas"
+
                     android:spinnerMode="dropdown" />
             </LinearLayout>
 

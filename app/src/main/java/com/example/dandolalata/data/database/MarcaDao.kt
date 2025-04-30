@@ -9,12 +9,15 @@ interface MarcaDao {
     @Query("SELECT * FROM marcas")
     suspend fun obtenerTodas(): List<Marca>
 
+    @Query("SELECT * FROM marcas ORDER BY nombre")
+    suspend fun obtenerTodasPorNombre(): List<Marca>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertar(marca: Marca): Long
 
     @Delete
     fun eliminar(marca: Marca)
 
-    @Query("SELECT * FROM marcas")
-    fun obtenerTodasFlow(): Flow<List<Marca>>
+    @Query("SELECT * FROM marcas ORDER BY nombre")
+    fun obtenerTodasFlowPornombre(): Flow<List<Marca>>
 }

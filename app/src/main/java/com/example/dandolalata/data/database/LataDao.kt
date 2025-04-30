@@ -9,7 +9,10 @@ interface LataDao {
     @Query("SELECT * FROM latas")
     fun obtenerTodas(): List<Lata>
 
-    @Query("SELECT * FROM latas")
+    @Query("SELECT latas.* " +
+            "FROM latas " +
+            "INNER JOIN marcas ON marcas.id = latas.marcaId " +
+            "ORDER BY marcas.nombre")
     fun obtenerTodasFlow(): Flow<List<Lata>>
 
     @Query("SELECT * FROM latas WHERE id = :id")

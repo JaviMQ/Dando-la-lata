@@ -30,7 +30,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun cargarMarcas() {
         viewModelScope.launch {
-            db.marcaDao().obtenerTodasFlow().collect { marcasFromDb ->
+            db.marcaDao().obtenerTodasFlowPornombre().collect { marcasFromDb ->
                 val listaConTodas = listOf(Marca(id = 0, nombre = "Todas las marcas")) + marcasFromDb
                 _marcas.postValue(listaConTodas)
             }
