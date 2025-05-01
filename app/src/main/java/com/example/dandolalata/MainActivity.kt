@@ -106,7 +106,11 @@ class MainActivity : AppCompatActivity() {
         // Galería con 2 columnas
         recyclerViewLatas.layoutManager = GridLayoutManager(this, 2)
         recyclerViewLatas.layoutManager = LinearLayoutManager(this)
-        latasAdapter = LatasAdapter(emptyList())
+        latasAdapter = LatasAdapter(emptyList()) { lataId ->
+            val intent = Intent(this, EditarLataActivity::class.java)
+            intent.putExtra("lata_id", lataId)
+            startActivity(intent)
+        }
         recyclerViewLatas.adapter = latasAdapter
 
         // Configurar la Toolbar

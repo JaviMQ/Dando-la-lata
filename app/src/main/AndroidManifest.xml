@@ -39,6 +39,7 @@
         <activity android:name=".AgregarMarcaActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"
             />
+        <activity android:name=".EditarLataActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

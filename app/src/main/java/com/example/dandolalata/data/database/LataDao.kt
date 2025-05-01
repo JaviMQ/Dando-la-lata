@@ -1,5 +1,6 @@
 package com.example.dandolalata.data.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.dandolalata.data.entities.Lata
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,10 @@ interface LataDao {
     fun obtenerTodasFlow(): Flow<List<Lata>>
 
     @Query("SELECT * FROM latas WHERE id = :id")
-    fun obtenerPorId(id: Int): Lata?
+    fun obtenerPorId(id: Int): LiveData<Lata>
+
+    @Query("SELECT * FROM latas WHERE id = :id")
+    fun obtenerPorIdDirecto(id: Int): Lata
 
     @Query("SELECT * FROM latas WHERE marcaId = :id")
     fun obtenerPorMarcaId(id: Int): List<Lata>
@@ -29,4 +33,5 @@ interface LataDao {
 
     @Update
     fun actualizar(lata: Lata)
+
 }

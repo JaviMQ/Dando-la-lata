@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dandolalata.R
 import com.squareup.picasso.Picasso
 import com.example.dandolalata.data.entities.Lata
-import java.io.File
 
-class LatasAdapter(private var latasList: List<Lata>) :
+
+class LatasAdapter(private var latasList: List<Lata>, private val onItemClick: (Int) -> Unit) :
     RecyclerView.Adapter<LatasAdapter.LataViewHolder>() {
 
     class LataViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -35,10 +35,11 @@ class LatasAdapter(private var latasList: List<Lata>) :
 
     override fun onBindViewHolder(holder: LataViewHolder, position: Int) {
         val lata = latasList[position]
-        holder.nombre.text = lata.nombre
+        holder.bind(lata)
 
-        val uriImagen = Uri.parse(lata.foto) // Convertimos la ruta en un URI válido
-        Picasso.get().load(uriImagen).into(holder.imagen)
+        holder.itemView.setOnClickListener {
+            onItemClick(lata.id)
+        }
     }
 
     override fun getItemCount() = latasList.size
