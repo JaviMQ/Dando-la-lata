@@ -60,20 +60,22 @@
                 android:inputType="text" />
 
             <!-- ImageView que sirve para capturar la foto -->
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="Foto de la lata"
-                android:src="@android:drawable/ic_menu_camera"
-                android:scaleType="centerCrop"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?android:attr/selectableItemBackground" />
 
             <!-- Botón para guardar la lata -->
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="300dp"
+                android:layout_height="350dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:contentDescription="Foto de la lata"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_camera" />
+
             <Button
                 android:id="@+id/buttonGuardar"
                 android:layout_width="match_parent"

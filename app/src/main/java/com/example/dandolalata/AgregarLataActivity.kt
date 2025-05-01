@@ -101,7 +101,7 @@ class AgregarLataActivity : AppCompatActivity() {
             val descripcion = editTextDescripcion.text.toString()
             val posicionSeleccionada = spinnerMarcas.selectedItemPosition
 
-            if (nombre.isNotEmpty() && descripcion.isNotEmpty() && rutaFoto != null && posicionSeleccionada > 0) {
+            if (nombre.isNotEmpty() && rutaFoto != null && posicionSeleccionada > 0) {
                 // Crea la nueva lata
                 val nuevaLata = Lata(
                     marcaId = idMarcaSeleccionada,
