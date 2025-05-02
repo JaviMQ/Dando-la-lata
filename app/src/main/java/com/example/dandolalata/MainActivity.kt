@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
 
             val adapter = ArrayAdapter(
                 this@MainActivity,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 marcas.map { it.nombre }
             )
             spinnerMarcas.adapter = adapter

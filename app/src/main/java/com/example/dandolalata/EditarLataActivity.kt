@@ -10,6 +10,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.dandolalata.data.database.AppDatabase
 import com.example.dandolalata.data.entities.Marca
@@ -35,6 +36,7 @@ class EditarLataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editar_lata)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.colorFondoGaleria)
 
         inicializarVariablesUI()
 
