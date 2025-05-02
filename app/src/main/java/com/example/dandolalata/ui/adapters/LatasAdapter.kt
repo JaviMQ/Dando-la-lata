@@ -18,7 +18,7 @@ class LatasAdapter(private var latasList: List<Lata>, private val onItemClick: (
     RecyclerView.Adapter<LatasAdapter.LataViewHolder>() {
 
     class LataViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imagen: ImageView = view.findViewById(R.id.imageView)
+        private val imagen: ImageView = view.findViewById(R.id.imageView)
         val nombre: TextView = view.findViewById(R.id.textView)
 
         fun bind(lata: Lata) {

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/colorFondoGaleria"
-    tools:context=".AgregarLataActivity">
+    tools:context=".CrearLataActivity">
 
     <!-- ScrollView para manejar el desbordamiento en pantallas pequeñas -->
     <android.widget.ScrollView
@@ -33,14 +33,19 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:spinnerMode="dropdown"
-                     />
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:minHeight="48dp"
+                />
+
                 <!-- Boton para crear Marca -->
                 <Button
                     android:id="@+id/buttonNuevaMarca"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     app:backgroundTint="@color/teal_700"
-                    android:text="+" />
+                    android:textColor="@android:color/white"
+                    android:text="@string/simbolo_mas" />
             </LinearLayout>
 
             <!-- EditText para el nombre de la lata -->
@@ -48,7 +53,9 @@
                 android:id="@+id/editTextNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre de la lata"
+                android:minHeight="48dp"
+                android:autofillHints="name"
+                android:hint="@string/nombre"
                 android:inputType="text" />
 
             <!-- EditText para la descripción de la lata -->
@@ -56,7 +63,9 @@
                 android:id="@+id/editTextDescripcion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descripción"
+                android:minHeight="48dp"
+                android:autofillHints="name"
+                android:hint="@string/descripcion"
                 android:inputType="text" />
 
             <!-- ImageView que sirve para capturar la foto -->
@@ -71,7 +80,8 @@
                 android:layout_marginBottom="16dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                android:contentDescription="Foto de la lata"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
                 android:focusable="true"
                 android:scaleType="centerCrop"
                 android:src="@android:drawable/ic_menu_camera" />
@@ -81,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@color/teal_700"
-                android:text="Crear lata"
+                android:text="@string/crear_lata"
                 android:textAllCaps="false" />
         </LinearLayout>
     </android.widget.ScrollView>

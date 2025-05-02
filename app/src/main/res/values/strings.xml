@@ -6,4 +6,10 @@
     <string name="cerrar_menu">Cerrar menu</string>
     <string name="drive_scope_file">https://www.googleapis.com/auth/drive.file</string>
     <string name="drive_upload_url">https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart</string>
+    <string name="guardar_lata">Guardar lata</string>
+    <string name="simbolo_mas">+</string>
+    <string name="nombre">Nombre de la lata</string>
+    <string name="descripcion">Descripción</string>
+    <string name="crear_lata">Crear lata</string>
+    <string name="foto_de_la_lata">Foto de la lata</string>
 </resources>

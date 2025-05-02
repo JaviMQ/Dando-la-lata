@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -18,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.WindowCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,9 +26,7 @@ import com.example.dandolalata.ui.adapters.LatasAdapter
 import com.example.dandolalata.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
@@ -74,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     private fun configurarListenerCrearLata(){
         val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
         fab.setOnClickListener {
-            val intent = Intent(this, AgregarLataActivity::class.java)
+            val intent = Intent(this, CrearLataActivity::class.java)
             startActivity(intent)
         }
     }

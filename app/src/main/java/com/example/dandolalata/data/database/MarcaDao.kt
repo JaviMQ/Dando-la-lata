@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MarcaDao {
-    @Query("SELECT * FROM marcas")
-    suspend fun obtenerTodas(): List<Marca>
 
     @Query("SELECT * FROM marcas ORDER BY nombre")
     suspend fun obtenerTodasPorNombre(): List<Marca>

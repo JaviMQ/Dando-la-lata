@@ -20,20 +20,32 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <Spinner
+                android:id="@+id/spinnerMarcas"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:spinnerMode="dropdown"
+                />
+
 
             <!-- EditText para el nombre de la lata -->
             <EditText
                 android:id="@+id/editTextNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:autofillHints="name"
+                android:inputType="text"
+                tools:ignore="LabelFor" />
 
             <!-- EditText para la descripción de la lata -->
             <EditText
                 android:id="@+id/editTextDescripcion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:autofillHints="name"
+                android:inputType="text"
+                tools:ignore="LabelFor" />
 
             <!-- ImageView que sirve para capturar la foto -->
 
@@ -49,14 +61,15 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:scaleType="centerCrop"
-                android:src="@android:drawable/ic_menu_camera" />
+                android:src="@android:drawable/ic_menu_camera"
+                tools:ignore="ContentDescription" />
 
             <Button
                 android:id="@+id/buttonGuardar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@color/teal_700"
-                android:text="Guardar lata"
+                android:text="@string/guardar_lata"
                 android:textAllCaps="false" />
         </LinearLayout>
     </android.widget.ScrollView>

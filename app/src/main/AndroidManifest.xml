@@ -35,8 +35,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AgregarLataActivity" />
-        <activity android:name=".AgregarMarcaActivity"
+        <activity android:name=".CrearLataActivity" />
+        <activity android:name=".CrearMarcaActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"
             />
         <activity android:name=".EditarLataActivity" />

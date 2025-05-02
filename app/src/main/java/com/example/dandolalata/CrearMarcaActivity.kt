@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AgregarMarcaActivity : AppCompatActivity() {
+class CrearMarcaActivity : AppCompatActivity() {
 
     private lateinit var editTextNombreMarca: EditText
     private lateinit var buttonGuardarMarca: Button
@@ -23,7 +23,7 @@ class AgregarMarcaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_agregar_marca)
+        setContentView(R.layout.activity_crear_marca)
 
         editTextNombreMarca = findViewById(R.id.editTextNombreMarca)
         buttonGuardarMarca = findViewById(R.id.buttonGuardarMarca)

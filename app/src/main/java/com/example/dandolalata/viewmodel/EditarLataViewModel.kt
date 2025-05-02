@@ -16,10 +16,10 @@ class EditarLataViewModel(application: Application) : AndroidViewModel(applicati
         return lataDao.obtenerPorId(id)
     }
 
-    fun actualizarLata(id: Int, nuevoNombre: String, nuevaDescripcion: String) {
+    fun actualizarLata(id: Int, nuevoNombre: String, nuevaDescripcion: String, nuevaMarca: Int) {
         viewModelScope.launch {
-            val lata = lataDao.obtenerPorIdDirecto(id) ?: return@launch
-            val actualizada = lata.copy(nombre = nuevoNombre, procedencia = nuevaDescripcion)
+            val lata = lataDao.obtenerPorIdDirecto(id)
+            val actualizada = lata.copy(nombre = nuevoNombre, procedencia = nuevaDescripcion, marcaId = nuevaMarca)
             lataDao.actualizar(actualizada)
         }
     }

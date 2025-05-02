@@ -20,7 +20,7 @@ interface LataDao {
     fun obtenerPorId(id: Int): LiveData<Lata>
 
     @Query("SELECT * FROM latas WHERE id = :id")
-    fun obtenerPorIdDirecto(id: Int): Lata
+    suspend fun obtenerPorIdDirecto(id: Int): Lata
 
     @Query("SELECT * FROM latas WHERE marcaId = :id")
     fun obtenerPorMarcaId(id: Int): List<Lata>
@@ -32,6 +32,6 @@ interface LataDao {
     fun eliminar(lata: Lata)
 
     @Update
-    fun actualizar(lata: Lata)
+    suspend fun actualizar(lata: Lata)
 
 }
