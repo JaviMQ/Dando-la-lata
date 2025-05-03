@@ -12,4 +12,5 @@
     <string name="descripcion">Descripción</string>
     <string name="crear_lata">Crear lata</string>
     <string name="foto_de_la_lata">Foto de la lata</string>
+    <string name="total_latas">Total %1$d</string>
 </resources>

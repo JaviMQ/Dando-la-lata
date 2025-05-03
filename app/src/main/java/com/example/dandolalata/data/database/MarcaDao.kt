@@ -10,6 +10,13 @@ interface MarcaDao {
     @Query("SELECT * FROM marcas ORDER BY nombre")
     suspend fun obtenerTodasPorNombre(): List<Marca>
 
+    @Query("SELECT marcas.id, marcas.nombre || '(' ||  COUNT(latas.id) || ')' as nombre " +
+            "FROM marcas " +
+            "LEFT JOIN latas ON latas.marcaId = marcas.id " +
+            "GROUP BY marcas.id, marcas.nombre " +
+            "ORDER BY nombre")
+    suspend fun obtenerTodasFlowPorNombreConTotales(): Flow<List<Marca>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertar(marca: Marca): Long
 

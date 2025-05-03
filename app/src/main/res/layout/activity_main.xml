@@ -39,6 +39,16 @@
                     android:layout_weight="1"
                     android:spinnerMode="dropdown"
                     />
+
+                <!-- Texto con total de latas -->
+                <TextView
+                    android:id="@+id/textViewTotalLatas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="4dp" />
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -22,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dandolalata.data.entities.Marca
 import com.example.dandolalata.ui.adapters.LatasAdapter
 import com.example.dandolalata.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -66,6 +68,14 @@ class MainActivity : AppCompatActivity() {
         configurarObservadorLatas()
         configurarObservadorMarcas()
     }
+
+    override fun onResume() {
+        // Cuando creo una lata y vuelvo al main, debo recargar las latas segun la marca seleccionada
+        super.onResume()
+        val marcaSeleccionada = spinnerMarcas.selectedItem as? Marca
+        viewModel.filtrarLatas(marcaSeleccionada)
+    }
+
 
     private fun configurarListenerCrearLata(){
         val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
@@ -169,8 +179,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun configurarObservadorLatas()
     {
-        // Observar las latas y actualizar el RecyclerView
+        // Observar las latas y actualizar el RecyclerView y el total de latas
         viewModel.latas.observe(this) { latas ->
+            val total = latas.size
+            findViewById<TextView>(R.id.textViewTotalLatas).text = getString(R.string.total_latas, total)
             latasAdapter.actualizarLista(latas)
         }
     }
