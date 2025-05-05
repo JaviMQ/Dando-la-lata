@@ -74,27 +74,30 @@ class GoogleDriveHelper (private val context: Context, private val token : Strin
 
 
 
-    suspend fun importarDesdeDrive(): Boolean = withContext(Dispatchers.IO) {
+    suspend fun importarDesdeDrive(onProgress: ((Int) -> Unit)? = null): Boolean = withContext(Dispatchers.IO) {
         try {
             // 1. Descargar base de datos
+            onProgress?.invoke(0)
             val nombreBd = DatabaseConfig.DATABASE_NAME
             val dbFileId = buscarArchivoEnDrive(token, nombreBd) ?: return@withContext false
             val dbDestino = File(context.getDatabasePath(DatabaseConfig.DATABASE_NAME).path)
 
             // Cerrar base de datos si está abierta
             AppDatabase.cerrarBaseDeDatos()
+            onProgress?.invoke(10)
 
             if (!descargarArchivoDesdeDrive(token, dbFileId, dbDestino))
                 throw Exception("Error descargando .DB desde Drive")
+            onProgress?.invoke(20)
 
-
-                // 2. Descargar imágenes
+            // 2. Descargar imágenes
             val zipFileId = buscarArchivoEnDrive(token, nombreZip) ?: return@withContext false
             val zipFile = File(context.cacheDir, nombreZip)
             if(!descargarArchivoDesdeDrive(token, zipFileId, zipFile))
                 throw Exception("Error descargando fotos desde Drive")
+            onProgress?.invoke(40)
             ZipHelper.descomprimirImagenes(context, zipFile)
-
+            onProgress?.invoke(100)
 
             true
         } catch (e: Exception) {

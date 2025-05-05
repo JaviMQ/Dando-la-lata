@@ -197,9 +197,34 @@ class MainActivity : AppCompatActivity() {
                         val token = authHelper.signIn()
                         if (token != null) {
                             val driveHelper = GoogleDriveHelper(this@MainActivity, token)
-                            if( driveHelper.importarDesdeDrive()){
-                                Toast.makeText(this@MainActivity, "Importación OK", Toast.LENGTH_SHORT).show()
-                                reiniciarApp(this@MainActivity)
+
+                            lifecycleScope.launch {
+                                try{
+                                    barraProgreso.visibility = View.VISIBLE
+                                    binding.progressOverlay.visibility = View.VISIBLE
+
+                                    val resultado = withContext(Dispatchers.IO) {
+                                        driveHelper.importarDesdeDrive() { progreso ->
+                                            runOnUiThread {
+                                                binding.barraProgreso.progress = progreso
+                                            }
+                                        }
+                                    }
+                                    if (resultado) {
+                                        Toast.makeText(this@MainActivity, "Importación OK", Toast.LENGTH_SHORT).show()
+                                        reiniciarApp(this@MainActivity)
+                                    } else {
+                                        Toast.makeText(this@MainActivity, "Error durante la importación", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                } catch (e: Exception) {
+                                    Toast.makeText(this@MainActivity, "Error inesperado: ${e.message}", Toast.LENGTH_LONG).show()
+                                    Log.e("DRIVE", "Error en exportarADrive: ${e.message}", e)
+                                } finally {
+                                    binding.barraProgreso.visibility = View.GONE
+                                    binding.progressOverlay.visibility = View.GONE
+                                }
+
                             }
 
                         }else{
