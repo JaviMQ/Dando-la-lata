@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.dandolalata.R
 import com.squareup.picasso.Picasso
 import com.example.dandolalata.data.entities.Lata
@@ -23,7 +25,17 @@ class LatasAdapter(private var latasList: List<Lata>, private val onItemClick: (
 
         fun bind(lata: Lata) {
             nombre.text = lata.nombre
-            Picasso.get().load(Uri.parse(lata.foto)).into(imagen)
+
+            val sizeInPx = (64 * imagen.context.resources.displayMetrics.density).toInt()
+            Glide.with(imagen.context)
+                .load(Uri.parse(lata.foto))
+                .override(sizeInPx, sizeInPx)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(imagen)
+
+
+            // Picasso.get().load(Uri.parse(lata.foto)).into(imagen)
         }
     }
 

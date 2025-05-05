@@ -41,6 +41,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        viewBinding = true
     }
 }
 
@@ -76,4 +77,7 @@ dependencies {
     implementation(libs.squareup.picasso)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
+
 }
