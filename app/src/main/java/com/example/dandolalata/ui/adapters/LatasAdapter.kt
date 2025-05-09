@@ -12,14 +12,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.dandolalata.R
-import com.squareup.picasso.Picasso
 import com.example.dandolalata.data.entities.Lata
 
 
-class LatasAdapter(private var latasList: List<Lata>, private val onItemClick: (Int) -> Unit) :
-    RecyclerView.Adapter<LatasAdapter.LataViewHolder>() {
+class LatasAdapter(
+    private var latasList: List<Lata>,
+    private val onItemClick: (Int) -> Unit,
+    private val onImagenClick: (String) -> Unit
+) : RecyclerView.Adapter<LatasAdapter.LataViewHolder>() {
 
-    class LataViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class LataViewHolder(
+        view: View,
+        private val onItemClick: (Int) -> Unit,
+        private val onImagenClick: (String) -> Unit
+    ) : RecyclerView.ViewHolder(view) {
+
         private val imagen: ImageView = view.findViewById(R.id.imageView)
         val nombre: TextView = view.findViewById(R.id.textView)
 
@@ -34,24 +41,26 @@ class LatasAdapter(private var latasList: List<Lata>, private val onItemClick: (
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imagen)
 
+            itemView.setOnClickListener {
+                onItemClick(lata.id)
+            }
 
-            // Picasso.get().load(Uri.parse(lata.foto)).into(imagen)
+            imagen.setOnClickListener {
+                onImagenClick(lata.foto)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LataViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_lata, parent, false)
-        return LataViewHolder(view)
+        return LataViewHolder(view, onItemClick, onImagenClick)
     }
+
 
     override fun onBindViewHolder(holder: LataViewHolder, position: Int) {
         val lata = latasList[position]
         holder.bind(lata)
-
-        holder.itemView.setOnClickListener {
-            onItemClick(lata.id)
-        }
     }
 
     override fun getItemCount() = latasList.size

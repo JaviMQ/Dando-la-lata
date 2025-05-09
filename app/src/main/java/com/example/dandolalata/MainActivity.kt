@@ -4,33 +4,30 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ProgressBar
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.dandolalata.data.entities.Marca
 import com.example.dandolalata.databinding.ActivityMainBinding
 import com.example.dandolalata.ui.adapters.LatasAdapter
 import com.example.dandolalata.viewmodel.MainViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,10 +35,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var recyclerViewLatas: RecyclerView
     private lateinit var latasAdapter: LatasAdapter
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var barraProgreso: ProgressBar
     private val viewModel: MainViewModel by viewModels()
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var authHelper: GoogleAuthHelper
@@ -89,8 +83,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun configurarListenerCrearLata(){
-        val fab = findViewById<FloatingActionButton>(R.id.fab_add_lata)
-        fab.setOnClickListener {
+        binding.fabAddLata.setOnClickListener {
             val intent = Intent(this, CrearLataActivity::class.java)
             startActivity(intent)
         }
@@ -118,37 +111,39 @@ class MainActivity : AppCompatActivity() {
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorFondoGaleria)
 
 
-        recyclerViewLatas = findViewById(R.id.recyclerViewLatas)
-        barraProgreso = findViewById(R.id.barra_progreso)
 
         // Galería con 2 columnas
-        recyclerViewLatas.layoutManager = GridLayoutManager(this, 2)
-        recyclerViewLatas.layoutManager = LinearLayoutManager(this)
-        latasAdapter = LatasAdapter(emptyList()) { lataId ->
-            val intent = Intent(this, EditarLataActivity::class.java)
-            intent.putExtra("lata_id", lataId)
-            startActivity(intent)
-        }
-        recyclerViewLatas.adapter = latasAdapter
+        binding.recyclerViewLatas.layoutManager = GridLayoutManager(this, 2)
+        binding.recyclerViewLatas.layoutManager = LinearLayoutManager(this)
+        latasAdapter = LatasAdapter(
+            emptyList(),
+            onItemClick = { lataId ->
+                val intent = Intent(this, EditarLataActivity::class.java)
+                intent.putExtra("lata_id", lataId)
+                startActivity(intent)
+            },
+            onImagenClick = { uri ->
+                mostrarImagenAmpliada(uri)
+            }
+        )
+
+        binding. recyclerViewLatas.adapter = latasAdapter
 
         // Configurar la Toolbar
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         // Configurar el DrawerLayout
-        drawerLayout = findViewById(R.id.mainDrawerLayout)
         toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.abrir_menu, R.string.cerrar_menu
+            this, binding.mainDrawerLayout, binding.toolbar, R.string.abrir_menu, R.string.cerrar_menu
         )
-        drawerLayout.addDrawerListener(toggle)
+        binding.mainDrawerLayout.addDrawerListener(toggle)
         toggle.syncState()
     }
 
     private fun configurarListenerMenuLateral(){
         // Manejar clics en las opciones del menú
-        val navigationView: NavigationView = findViewById(R.id.nav_menu_lateral)
 
-        navigationView.setNavigationItemSelectedListener { menuItem ->
+        binding.navMenuLateral.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_crear_backup -> {
                     lifecycleScope.launch {
@@ -160,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                             val driveHelper = GoogleDriveHelper(this@MainActivity, token)
                             lifecycleScope.launch {
                                 try{
-                                    barraProgreso.visibility = View.VISIBLE
+                                    binding.barraProgreso.visibility = View.VISIBLE
                                     binding.progressOverlay.visibility = View.VISIBLE
 
                                     val resultado = withContext(Dispatchers.IO) {
@@ -200,7 +195,7 @@ class MainActivity : AppCompatActivity() {
 
                             lifecycleScope.launch {
                                 try{
-                                    barraProgreso.visibility = View.VISIBLE
+                                    binding.barraProgreso.visibility = View.VISIBLE
                                     binding.progressOverlay.visibility = View.VISIBLE
 
                                     val resultado = withContext(Dispatchers.IO) {
@@ -234,7 +229,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
             }
-            drawerLayout.closeDrawer(GravityCompat.START)
+            binding.mainDrawerLayout.closeDrawer(GravityCompat.START)
             true
         }
     }
@@ -244,7 +239,7 @@ class MainActivity : AppCompatActivity() {
         // Observar las latas y actualizar el RecyclerView y el total de latas
         viewModel.latas.observe(this) { latas ->
             val total = latas.size
-            findViewById<TextView>(R.id.textViewTotalLatas).text = getString(R.string.total_latas, total)
+            binding.textViewTotalLatas.text = getString(R.string.total_latas, total)
             latasAdapter.actualizarLista(latas)
         }
     }
@@ -276,5 +271,20 @@ class MainActivity : AppCompatActivity() {
         context.startActivity(intent)
         Runtime.getRuntime().exit(0) // Finaliza el proceso actual
     }
+
+
+    private fun mostrarImagenAmpliada(uri: String) {
+        Glide.with(this)
+            .load(Uri.parse(uri))
+            .into(binding.imagenAmpliada)
+
+        binding.overlayImagenAmpliada.visibility = View.VISIBLE
+
+        binding.overlayImagenAmpliada.setOnClickListener {
+            binding.overlayImagenAmpliada.visibility = View.GONE
+        }
+    }
+
+
 
 }
