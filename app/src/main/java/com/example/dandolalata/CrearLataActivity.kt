@@ -2,6 +2,8 @@ package com.example.dandolalata
 
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -22,7 +24,9 @@ import com.example.dandolalata.utils.AppPaths
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 
 
 class CrearLataActivity : AppCompatActivity() {
@@ -44,7 +48,13 @@ class CrearLataActivity : AppCompatActivity() {
             if (isSuccess) {
                 // Si la toma de la foto fue exitosa
                 rutaFoto?.let {
-                    imageView.setImageURI(Uri.parse(it)) // Mostrar la imagen en el ImageView
+                    val uriOriginal = Uri.parse(it)
+                    val uriComprimida = comprimirImagen(uriOriginal)
+
+                    uriComprimida?.let { comprimida ->
+                        imageView.setImageURI(comprimida)
+                        rutaFoto = comprimida.toString() // Actualiza la ruta con la versión comprimida
+                    }
 
                     // En este punto, la foto ya se ha tomado y está almacenada en el archivo
                 }
@@ -180,6 +190,42 @@ class CrearLataActivity : AppCompatActivity() {
             val intent = Intent(this, CrearMarcaActivity::class.java)
             nuevaMarcaLauncher.launch(intent)
         }
+    }
+
+    private fun comprimirImagen(uri: Uri): Uri? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+
+            val byteArray = reducirBitmapAMax1MB(bitmap)
+
+            // Sobrescribir el archivo original
+            val archivoOriginal = File(Uri.parse(rutaFoto).path!!)
+            val outputStream = FileOutputStream(archivoOriginal)
+            outputStream.write(byteArray)
+            outputStream.close()
+
+            Uri.fromFile(archivoOriginal)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun reducirBitmapAMax1MB(bitmap: Bitmap): ByteArray {
+        var calidad = 100
+        val maxSize = 1024 * 1024 // 1 MB
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, calidad, stream)
+
+        while (stream.size() > maxSize && calidad > 10) {
+            calidad -= 5
+            stream.reset()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, calidad, stream)
+        }
+
+        return stream.toByteArray()
     }
 
 

@@ -8,15 +8,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -24,13 +21,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.dandolalata.data.database.AppDatabase
 import com.example.dandolalata.data.entities.Marca
 import com.example.dandolalata.databinding.ActivityMainBinding
 import com.example.dandolalata.ui.adapters.LatasAdapter
+import com.example.dandolalata.utils.AppPaths
 import com.example.dandolalata.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var authHelper: GoogleAuthHelper
     private lateinit var binding: ActivityMainBinding
-
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -60,12 +59,11 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        authHelper = GoogleAuthHelper(this)
 
 
         checkPermission()
-        inicializarVariables()
         configurarUI()
-
 
         configurarListenerMenuLateral()
         configurarListenerCrearLata()
@@ -74,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         configurarObservadorMarcas()
     }
 
+
     override fun onResume() {
         // Cuando creo una lata y vuelvo al main, debo recargar las latas segun la marca seleccionada
         super.onResume()
@@ -81,15 +80,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.filtrarLatas(marcaSeleccionada)
     }
 
-
     private fun configurarListenerCrearLata(){
         binding.fabAddLata.setOnClickListener {
             val intent = Intent(this, CrearLataActivity::class.java)
             startActivity(intent)
         }
     }
-
-
 
     private fun checkPermission() {
         when {
@@ -103,13 +99,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun inicializarVariables(){
-        authHelper = GoogleAuthHelper(this)
-    }
-
     private fun configurarUI(){
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorFondoGaleria)
-
 
 
         // Galería con 2 columnas
@@ -141,8 +132,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configurarListenerMenuLateral(){
-        // Manejar clics en las opciones del menú
-
         binding.navMenuLateral.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_crear_backup -> {
@@ -284,7 +273,6 @@ class MainActivity : AppCompatActivity() {
             binding.overlayImagenAmpliada.visibility = View.GONE
         }
     }
-
 
 
 }

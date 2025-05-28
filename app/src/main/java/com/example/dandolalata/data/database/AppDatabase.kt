@@ -7,9 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.dandolalata.data.entities.Lata
 import com.example.dandolalata.data.entities.Marca
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Database(entities = [Marca::class, Lata::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
