@@ -41,6 +41,8 @@ class CrearLataActivity : AppCompatActivity() {
     private var rutaFoto: String? = null
     private val db = AppDatabase.obtenerInstancia(this)
     private var listaMarcas = mutableListOf<Marca>()
+    private var archivoFoto: File? = null
+
 
     // Llamada al launcher para tomar la foto
     private val takePictureLauncher =
@@ -138,11 +140,11 @@ class CrearLataActivity : AppCompatActivity() {
     private fun configurarListeners(){
         // Botón para tomar una foto
         imageView.setOnClickListener {
-            val photoFile = crearArchivoFoto()
+            archivoFoto = crearArchivoFoto()
             val uri = FileProvider.getUriForFile(
                 this,
                 "com.example.dandolalata.fileprovider",  // Asegúrate de que el nombre del proveedor coincide con el de tu AndroidManifest.xml
-                photoFile
+                archivoFoto!!
             )
             // Llama al launcher para capturar la foto
             rutaFoto = uri.toString()
@@ -201,7 +203,7 @@ class CrearLataActivity : AppCompatActivity() {
             val byteArray = reducirBitmapAMax1MB(bitmap)
 
             // Sobrescribir el archivo original
-            val archivoOriginal = File(Uri.parse(rutaFoto).path!!)
+            val archivoOriginal = archivoFoto ?: return null
             val outputStream = FileOutputStream(archivoOriginal)
             outputStream.write(byteArray)
             outputStream.close()
