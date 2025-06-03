@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class GoogleDriveHelper (private val context: Context, private val token : String) {
     private val nombreCarpetaDrive : String = "FotosLatas"
+    private val carpetaImagenes = File(context.filesDir, AppPaths.IMAGENES_DIR)
+
 
     // Revisado OK
     suspend fun exportarADrive(onProgress: ((Int) -> Unit)? = null): Boolean = withContext(Dispatchers.IO) {
@@ -81,17 +83,37 @@ class GoogleDriveHelper (private val context: Context, private val token : Strin
             // 2. Descargar imágenes
             val carpetaDriveId = buscarEnDrive(token, nombreCarpetaDrive, true) ?: return@withContext false
             val archivos = listarArchivosEnCarpeta(token, carpetaDriveId)
-            for ((id, nombre) in archivos) {
-                val destino = File(AppPaths.IMAGENES_DIR, nombre)
-                val ok = descargarArchivoDesdeDrive(token, id, destino)
-                if (ok) {
-                    Log.d("DRIVE", "Descargado: $nombre")
+
+            if (!carpetaImagenes.exists()) carpetaImagenes.mkdirs()
+
+            val progresoActual = AtomicInteger(20)
+            val incremento = if (archivos.isNotEmpty()) (80 / archivos.size) else 1 // de 20 a 100
+
+            val resultados = archivos.map { (id, nombre) ->
+                async(Dispatchers.IO) {
+                    val destino = File(carpetaImagenes, nombre)
+                    val ok = descargarArchivoDesdeDrive(token, id, destino)
+                    /*
+                    if (ok) {
+                        Log.d("DRIVE", "Descargado: $nombre")
+                    }
+                    */
+                    val progreso = progresoActual.addAndGet(incremento)
+                    withContext(Dispatchers.Main) {
+                        onProgress?.invoke(minOf(progreso, 100))
+                    }
+                    ok
                 }
             }
 
+            val todosOk = resultados.awaitAll().all { it }
             onProgress?.invoke(100)
 
-            true
+            val archivosLocales = carpetaImagenes.listFiles()
+            Log.d("DRIVE", "Total de imágenes en carpeta local: ${archivosLocales?.size ?: 0}")
+
+            return@withContext todosOk
+
         } catch (e: Exception) {
             Toast.makeText(context, "Error en importarDesdeDrive: ${e.message}", Toast.LENGTH_SHORT).show()
             Log.e("DRIVE", "Error en importarDesdeDrive: ${e.message}")
@@ -213,7 +235,7 @@ class GoogleDriveHelper (private val context: Context, private val token : Strin
             idCarpetaDrive = crearCarpetaEnDrive(nombreCarpetaDrive, accessToken)
         }
 
-        val carpetaImagenes = File(context.filesDir, AppPaths.IMAGENES_DIR)
+
         if (!carpetaImagenes.exists() || !carpetaImagenes.isDirectory) return@coroutineScope false
         val db = AppDatabase.obtenerInstancia(context)
         val latas = db.lataDao().obtenerTodas()
@@ -235,7 +257,9 @@ class GoogleDriveHelper (private val context: Context, private val token : Strin
                         subirArchivoADrive(accessToken, archivo, "image/jpeg", idCarpetaDrive) // reintento
 
                 val progreso = porcentajeBaseBarra + progresoActual.addAndGet(incrementoBarraBase)
-                onProgress?.invoke(progreso)
+                withContext(Dispatchers.Main) {
+                    onProgress?.invoke(progreso)
+                }
                 Log.e("JAVI", "Nuevo progreso: ${progreso}")
                 if(!ok){
                     Toast.makeText(context, "Error subiendo foto ${archivo.name}", Toast.LENGTH_SHORT).show()
@@ -338,7 +362,7 @@ class GoogleDriveHelper (private val context: Context, private val token : Strin
 
     private suspend fun listarArchivosEnCarpeta(accessToken: String, folderId: String): List<Pair<String, String>> = withContext(Dispatchers.IO) {
         val query = "parents in '$folderId' and trashed=false"
-        val url = URL("https://www.googleapis.com/drive/v3/files?q=${URLEncoder.encode(query, "UTF-8")}&fields=files(id,name)")
+        val url = URL("https://www.googleapis.com/drive/v3/files?q=${URLEncoder.encode(query, "UTF-8")}&pageSize=1000&fields=files(id,name)")
         val conn = url.openConnection() as HttpURLConnection
         conn.setRequestProperty("Authorization", "Bearer $accessToken")
 
