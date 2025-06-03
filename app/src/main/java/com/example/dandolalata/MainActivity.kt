@@ -60,7 +60,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         authHelper = GoogleAuthHelper(this)
-
+        val db = AppDatabase.obtenerInstancia(this)
+        eliminarImagenesSinLata(db)
 
         checkPermission()
         configurarUI()
@@ -274,5 +275,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun eliminarImagenesSinLata(db: AppDatabase) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+
+                val lataDao = db.lataDao()
+                val archivosDir = File(filesDir, AppPaths.IMAGENES_DIR)
+                if (!archivosDir.exists()) return@launch
+
+                // Obtener todas las rutas de foto que están en la base de datos
+                val latasUsadas = lataDao.obtenerTodas()
+                val nombresUsados = latasUsadas.mapNotNull {
+                    val path = it.foto
+                    path?.let { p -> File(Uri.parse(p).path ?: p).name }
+                }.toSet()
+
+                // Lista todos los archivos en la carpeta imagenes
+                val archivosLocales = archivosDir.listFiles() ?: return@launch
+
+                var cantidadEliminadas = 0
+                for (archivo in archivosLocales) {
+                    val nombre = archivo.name
+                    if (nombre !in nombresUsados) {
+                        Log.e("JAVI", "Eliminando: ${archivo.absolutePath}")
+                        // archivo.delete()
+                        cantidadEliminadas++
+                    }
+                }
+
+                withContext(Dispatchers.Main) {
+                    if(cantidadEliminadas > 0) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "$cantidadEliminadas imágenes a eliminar",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Error al eliminar imágenes: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
 }
