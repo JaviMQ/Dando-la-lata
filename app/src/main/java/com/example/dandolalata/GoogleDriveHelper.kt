@@ -339,20 +339,45 @@ class GoogleDriveHelper (private val context: Context, private val token : Strin
         }
     }
 
+    /**
+     * Elimina las fotos del Drive. Se hace en un bucle pq tiene un limite de 100 objetos
+     */
     private suspend fun eliminarContenidoCarpeta(accessToken: String, carpetaId: String) = withContext(Dispatchers.IO) {
         try {
             val query = "'$carpetaId' in parents and trashed = false"
+            var pageToken: String? = null
+            var totalArchivos = 0
             val encodedQuery = URLEncoder.encode(query, "UTF-8")
-            val url = URL("https://www.googleapis.com/drive/v3/files?q=$encodedQuery&fields=files(id)")
-            val conn = url.openConnection() as HttpURLConnection
-            conn.setRequestProperty("Authorization", "Bearer $accessToken")
 
-            val response = conn.inputStream.bufferedReader().readText()
-            val archivos = JSONObject(response).getJSONArray("files")
+            do {
 
-            for (i in 0 until archivos.length()) {
-                val fileId = archivos.getJSONObject(i).getString("id")
-                eliminarArchivoDeDrive(accessToken, fileId)
+                val urlString = buildString {
+                    append("https://www.googleapis.com/drive/v3/files?q=$encodedQuery&fields=nextPageToken,files(id)")
+                    if (pageToken != null) {
+                        append("&pageToken=$pageToken")
+                    }
+                }
+
+                val url = URL(urlString)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.setRequestProperty("Authorization", "Bearer $accessToken")
+
+                val response = conn.inputStream.bufferedReader().readText()
+                val json = JSONObject(response)
+                val archivos = json.getJSONArray("files")
+                totalArchivos += archivos.length()
+
+                for (i in 0 until archivos.length()) {
+                    val fileId = archivos.getJSONObject(i).getString("id")
+                    eliminarArchivoDeDrive(accessToken, fileId)
+                }
+
+                pageToken = json.optString("nextPageToken", null)
+
+            } while (!pageToken.isNullOrEmpty())
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Total de fotos detectadas y eliminadas: $totalArchivos", Toast.LENGTH_SHORT).show()
             }
 
         } catch (e: Exception) {
