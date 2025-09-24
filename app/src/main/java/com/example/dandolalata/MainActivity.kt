@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         // Cuando creo una lata y vuelvo al main, debo recargar las latas segun la marca seleccionada
         super.onResume()
-        val marcaSeleccionada = binding.spinnerMarcas.selectedItem as? Marca
+        val pos = binding.spinnerMarcas.selectedItemPosition
+        val marcaSeleccionada = viewModel.marcas.value?.get(pos)
         viewModel.filtrarLatas(marcaSeleccionada)
     }
 
